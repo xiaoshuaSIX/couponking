@@ -2,28 +2,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.8</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
     <groupId>com.xiaoshuai66.couponking</groupId>
     <artifactId>couponking-all</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>couponking</name>
-    <description>couponking</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
+
+    <description>优惠卷系统</description>
+
     <developers>
-        <developer/>
+        <developer>
+            <name>
+                小帅66
+            </name>
+        </developer>
     </developers>
+
     <modules>
+        <!-- 后台管理系统：创建优惠券、店家查看以及管理优惠券、创建优惠券发放批次等 -->
         <module>merchant-admin</module>
     </modules>
+
     <properties>
         <java.version>17</java.version>
         <spring-boot.version>3.0.7</spring-boot.version>
@@ -49,6 +47,7 @@
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <elasticsearch-spring-boot-starter.version>2.6.12</elasticsearch-spring-boot-starter.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
