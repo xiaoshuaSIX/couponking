@@ -19,11 +19,10 @@ import com.xiaoshuai66.couponking.merchant.admin.service.basics.chain.MerchantAd
 import jodd.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.xiaoshuai66.couponking.merchant.admin.enums.ChainBizMarkEnum.MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY;
@@ -65,6 +64,26 @@ public class CouponTemplateServiceImpl implements CouponTemplateService {
                         entry -> entry.getValue() != null ? entry.getValue().toString() : ""
                 ));
         String couponTemplateCacheKey = String.format(MerchantAdminRedisConstant.COUPON_TEMPLATE_KEY, couponTemplateDO.getId());
-        stringRedisTemplate.opsForHash().putAll(couponTemplateCacheKey, actualCacheTargetMap);
+
+        // 通过 LUA 脚本执行设置 Hash 数据以及设置过期时间
+        String luaScript = "redis.call('HMSET', KEYS[1], unpack(ARGV, 1, #ARGV - 1))" +
+                "redis.call('EXPIPEAT', KEYS[1], ARGV[#ARGV])";
+
+        List<String> keys = Collections.singletonList(couponTemplateCacheKey);
+        List<String> args = new ArrayList<>(actualCacheTargetMap.size() * 2 + 1);
+        actualCacheTargetMap.forEach((key, value) -> {
+            args.add(key);
+            args.add(value);
+        });
+
+        // 优惠券活动过期时间转换位秒级别的 Unix 时间戳
+        args.add(String.valueOf(couponTemplateDO.getValidStartTime().getTime() / 1000));
+
+        // 执行 LUA 脚本
+        stringRedisTemplate.execute(
+                new DefaultRedisScript<>(luaScript, Long.class),
+                keys,
+                args.toArray()
+        );
     }
 }
