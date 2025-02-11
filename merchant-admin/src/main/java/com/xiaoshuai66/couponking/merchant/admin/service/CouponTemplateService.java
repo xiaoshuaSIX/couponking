@@ -1,5 +1,7 @@
 package com.xiaoshuai66.couponking.merchant.admin.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.xiaoshuai66.couponking.merchant.admin.dao.entity.CouponTemplateDO;
 import com.xiaoshuai66.couponking.merchant.admin.dto.req.CouponTemplateSaveReqDTO;
 
 /**
@@ -11,7 +13,7 @@ import com.xiaoshuai66.couponking.merchant.admin.dto.req.CouponTemplateSaveReqDT
  * @Create 2025/2/9 22:59
  * @Version 1.0
  */
-public interface CouponTemplateService {
+public interface CouponTemplateService extends IService<CouponTemplateDO> {
     /**
      * 商家创建优惠券模版
      *

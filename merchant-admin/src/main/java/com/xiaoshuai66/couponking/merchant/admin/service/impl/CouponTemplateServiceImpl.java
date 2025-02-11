@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xiaoshuai66.couponking.framework.exception.ClientException;
 import com.xiaoshuai66.couponking.merchant.admin.constant.MerchantAdminRedisConstant;
 import com.xiaoshuai66.couponking.merchant.admin.context.UserContext;
@@ -38,7 +39,7 @@ import static com.xiaoshuai66.couponking.merchant.admin.enums.ChainBizMarkEnum.M
  */
 @Service
 @RequiredArgsConstructor
-public class CouponTemplateServiceImpl implements CouponTemplateService {
+public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper, CouponTemplateDO> implements CouponTemplateService {
 
     private final CouponTemplateMapper couponTemplateMapper;
     private final StringRedisTemplate stringRedisTemplate;
