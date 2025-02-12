@@ -1,4 +1,4 @@
-package com.xiaoshuai66.couponking.merchant.admin.context;
+package com.xiaoshuai66.couponking.merchant.admin.common.context;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
 

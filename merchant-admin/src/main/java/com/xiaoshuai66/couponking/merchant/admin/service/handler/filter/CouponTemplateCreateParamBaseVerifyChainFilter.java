@@ -5,15 +5,15 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
 import com.xiaoshuai66.couponking.framework.exception.ClientException;
 import com.xiaoshuai66.couponking.merchant.admin.dto.req.CouponTemplateSaveReqDTO;
-import com.xiaoshuai66.couponking.merchant.admin.enums.DiscountTargetEnum;
-import com.xiaoshuai66.couponking.merchant.admin.enums.DiscountTypeEnum;
+import com.xiaoshuai66.couponking.merchant.admin.common.enums.DiscountTargetEnum;
+import com.xiaoshuai66.couponking.merchant.admin.common.enums.DiscountTypeEnum;
 import com.xiaoshuai66.couponking.merchant.admin.service.basics.chain.MerchantAdminAbstractChainHandler;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Date;
 
-import static com.xiaoshuai66.couponking.merchant.admin.enums.ChainBizMarkEnum.MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY;
+import static com.xiaoshuai66.couponking.merchant.admin.common.enums.ChainBizMarkEnum.MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY;
 
 /**
  * ClassName: CouponTemplateCreateParamBaseVerifyChainFilter

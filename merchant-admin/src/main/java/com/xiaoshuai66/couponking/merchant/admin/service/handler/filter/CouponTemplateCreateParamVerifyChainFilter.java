@@ -2,11 +2,11 @@ package com.xiaoshuai66.couponking.merchant.admin.service.handler.filter;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.xiaoshuai66.couponking.merchant.admin.dto.req.CouponTemplateSaveReqDTO;
-import com.xiaoshuai66.couponking.merchant.admin.enums.DiscountTargetEnum;
+import com.xiaoshuai66.couponking.merchant.admin.common.enums.DiscountTargetEnum;
 import com.xiaoshuai66.couponking.merchant.admin.service.basics.chain.MerchantAdminAbstractChainHandler;
 import org.springframework.stereotype.Component;
 
-import static com.xiaoshuai66.couponking.merchant.admin.enums.ChainBizMarkEnum.MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY;
+import static com.xiaoshuai66.couponking.merchant.admin.common.enums.ChainBizMarkEnum.MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY;
 
 /**
  * ClassName: CouponTemplateCreateParamVerifyChainFilter

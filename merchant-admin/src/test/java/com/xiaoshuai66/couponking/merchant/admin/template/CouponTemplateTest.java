@@ -3,7 +3,7 @@ package com.xiaoshuai66.couponking.merchant.admin.template;
 import cn.hutool.core.lang.Assert;
 import com.alibaba.fastjson2.JSONObject;
 import com.xiaoshuai66.couponking.merchant.admin.dao.entity.CouponTemplateDO;
-import com.xiaoshuai66.couponking.merchant.admin.enums.CouponTemplateStatusEnum;
+import com.xiaoshuai66.couponking.merchant.admin.common.enums.CouponTemplateStatusEnum;
 import com.xiaoshuai66.couponking.merchant.admin.service.CouponTemplateService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

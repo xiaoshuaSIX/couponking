@@ -1,4 +1,4 @@
-package com.xiaoshuai66.couponking.merchant.admin.constant;
+package com.xiaoshuai66.couponking.merchant.admin.common.constant;
 
 /**
  * ClassName: MerchantAdminRedisConstant

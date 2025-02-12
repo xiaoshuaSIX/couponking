@@ -1,4 +1,4 @@
-package com.xiaoshuai66.couponking.merchant.admin.enums;
+package com.xiaoshuai66.couponking.merchant.admin.common.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

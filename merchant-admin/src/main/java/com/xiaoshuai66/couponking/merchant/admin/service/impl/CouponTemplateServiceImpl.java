@@ -4,17 +4,17 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mzt.logapi.starter.annotation.LogRecord;
-import com.xiaoshuai66.couponking.merchant.admin.constant.MerchantAdminRedisConstant;
-import com.xiaoshuai66.couponking.merchant.admin.context.UserContext;
+import com.xiaoshuai66.couponking.merchant.admin.common.constant.MerchantAdminRedisConstant;
+import com.xiaoshuai66.couponking.merchant.admin.common.context.UserContext;
 import com.xiaoshuai66.couponking.merchant.admin.dao.entity.CouponTemplateDO;
 import com.xiaoshuai66.couponking.merchant.admin.dao.entity.CouponTemplateLogDO;
 import com.xiaoshuai66.couponking.merchant.admin.dao.mapper.CouponTemplateLogMapper;
 import com.xiaoshuai66.couponking.merchant.admin.dao.mapper.CouponTemplateMapper;
 import com.xiaoshuai66.couponking.merchant.admin.dto.req.CouponTemplateSaveReqDTO;
 import com.xiaoshuai66.couponking.merchant.admin.dto.resp.CouponTemplateQueryRespDTO;
-import com.xiaoshuai66.couponking.merchant.admin.enums.CouponTemplateStatusEnum;
-import com.xiaoshuai66.couponking.merchant.admin.enums.DiscountTargetEnum;
-import com.xiaoshuai66.couponking.merchant.admin.enums.DiscountTypeEnum;
+import com.xiaoshuai66.couponking.merchant.admin.common.enums.CouponTemplateStatusEnum;
+import com.xiaoshuai66.couponking.merchant.admin.common.enums.DiscountTargetEnum;
+import com.xiaoshuai66.couponking.merchant.admin.common.enums.DiscountTypeEnum;
 import com.xiaoshuai66.couponking.merchant.admin.service.CouponTemplateService;
 import com.xiaoshuai66.couponking.merchant.admin.service.basics.chain.MerchantAdminChainContext;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.xiaoshuai66.couponking.merchant.admin.enums.ChainBizMarkEnum.MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY;
+import static com.xiaoshuai66.couponking.merchant.admin.common.enums.ChainBizMarkEnum.MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY;
 
 /**
  * ClassName: CouponTemplateServiceImpl
@@ -49,8 +49,8 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
     @LogRecord(
             success = """
                     创建优惠券：{{#requestParam.name}}， \
-                    优惠对象：{{#requestParam.target}}， \
-                    优惠类型：{{#requestParam.type}}， \
+                    优惠对象：{COMMON_ENUM_PARSE{'DiscountTargetEnum' + '_' + #requestParam.target}}， \
+                    优惠类型：{COMMON_ENUM_PARSE{'DiscountTypeEnum' + '_' + #requestParam.type}}， \
                     库存数量：{{#requestParam.stock}}， \
                     优惠商品编码：{{#requestParam.goods}}， \
                     有效期开始时间：{{#requestParam.validStartTime}}， \

@@ -1,7 +1,7 @@
 package com.xiaoshuai66.couponking.merchant.admin.config;
 
-import com.xiaoshuai66.couponking.merchant.admin.context.UserContext;
-import com.xiaoshuai66.couponking.merchant.admin.context.UserInfoDTO;
+import com.xiaoshuai66.couponking.merchant.admin.common.context.UserContext;
+import com.xiaoshuai66.couponking.merchant.admin.common.context.UserInfoDTO;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

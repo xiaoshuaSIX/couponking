@@ -1,8 +1,8 @@
 package com.xiaoshuai66.couponking.merchant.admin.template.spel;
 
 import cn.hutool.core.lang.Assert;
-import com.xiaoshuai66.couponking.merchant.admin.context.UserContext;
-import com.xiaoshuai66.couponking.merchant.admin.context.UserInfoDTO;
+import com.xiaoshuai66.couponking.merchant.admin.common.context.UserContext;
+import com.xiaoshuai66.couponking.merchant.admin.common.context.UserInfoDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;

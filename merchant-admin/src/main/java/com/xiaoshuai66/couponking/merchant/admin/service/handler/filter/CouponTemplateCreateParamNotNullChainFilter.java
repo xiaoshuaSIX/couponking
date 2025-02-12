@@ -8,7 +8,7 @@ import com.xiaoshuai66.couponking.merchant.admin.service.basics.chain.MerchantAd
 import jodd.util.StringUtil;
 import org.springframework.stereotype.Component;
 
-import static com.xiaoshuai66.couponking.merchant.admin.enums.ChainBizMarkEnum.MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY;
+import static com.xiaoshuai66.couponking.merchant.admin.common.enums.ChainBizMarkEnum.MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY;
 
 /**
  * ClassName: CouponTemplateCreateParamNotNullChainFilter

@@ -1,4 +1,4 @@
-package com.xiaoshuai66.couponking.merchant.admin.enums;
+package com.xiaoshuai66.couponking.merchant.admin.common.enums;
 
 /**
  * ClassName: ChainBizMarkEnum
