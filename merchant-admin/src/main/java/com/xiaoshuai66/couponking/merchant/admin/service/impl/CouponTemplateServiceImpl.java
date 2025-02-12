@@ -1,34 +1,24 @@
 package com.xiaoshuai66.couponking.merchant.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.crypto.digest.DigestUtil;
-import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mzt.logapi.context.LogRecordContext;
 import com.mzt.logapi.starter.annotation.LogRecord;
-import com.xiaoshuai66.couponking.framework.exception.ClientException;
 import com.xiaoshuai66.couponking.merchant.admin.common.constant.MerchantAdminRedisConstant;
 import com.xiaoshuai66.couponking.merchant.admin.common.context.UserContext;
-import com.xiaoshuai66.couponking.merchant.admin.common.context.UserInfoDTO;
 import com.xiaoshuai66.couponking.merchant.admin.dao.entity.CouponTemplateDO;
-import com.xiaoshuai66.couponking.merchant.admin.dao.entity.CouponTemplateLogDO;
-import com.xiaoshuai66.couponking.merchant.admin.dao.mapper.CouponTemplateLogMapper;
 import com.xiaoshuai66.couponking.merchant.admin.dao.mapper.CouponTemplateMapper;
 import com.xiaoshuai66.couponking.merchant.admin.dto.req.CouponTemplateSaveReqDTO;
 import com.xiaoshuai66.couponking.merchant.admin.dto.resp.CouponTemplateQueryRespDTO;
 import com.xiaoshuai66.couponking.merchant.admin.common.enums.CouponTemplateStatusEnum;
-import com.xiaoshuai66.couponking.merchant.admin.common.enums.DiscountTargetEnum;
-import com.xiaoshuai66.couponking.merchant.admin.common.enums.DiscountTypeEnum;
 import com.xiaoshuai66.couponking.merchant.admin.service.CouponTemplateService;
 import com.xiaoshuai66.couponking.merchant.admin.service.basics.chain.MerchantAdminChainContext;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RLock;
+import org.apache.poi.ss.formula.functions.T;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,88 +61,54 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
     )
     @Override
     public void createCouponTemplate(CouponTemplateSaveReqDTO requestParam) {
-        // 获取分布式锁标识
-        String lockKey = String.format("no-duplicate-submit:path:%s:currentUserId:%s:md5:%s", getServletPath(), getCurrentUserId(), calcArgsMD5(requestParam));
-        RLock lock = redissonClient.getLock(lockKey);
-        // 尝试获取锁，获取锁失败就意味着已经重复提交，直接抛出异常
-        if (!lock.tryLock()) {
-            throw new ClientException("请勿短时间内容复提交优惠券模版");
-        }
-
+        // 业务中睡一会，避免执行太快，模拟业务繁忙
         try {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            // 通过责任链验证请求参数是否正确
-            merchantAdminChainContext.handler(MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY.name(), requestParam);
-
-            // 新增优惠券模版信息到数据库
-            CouponTemplateDO couponTemplateDO = BeanUtil.toBean(requestParam, CouponTemplateDO.class);
-            couponTemplateDO.setStatus(CouponTemplateStatusEnum.ACTIVE.getStatus());
-            couponTemplateDO.setShopNumber(UserContext.getShopNumber());
-            couponTemplateMapper.insert(couponTemplateDO);
-
-            //因为模板 ID 是运行中生成的，@LogRecord 默认拿不到，所以我们需要手动设置
-            LogRecordContext.putVariable("bizNo", couponTemplateDO.getId());
-
-            // 缓存预热：通过将数据库的记录序列化成 JSON 字符串放入 Redis 缓存
-            CouponTemplateQueryRespDTO actualRespDTO = BeanUtil.toBean(couponTemplateDO, CouponTemplateQueryRespDTO.class);
-            Map<String, Object> cacheTargetMap = BeanUtil.beanToMap(actualRespDTO, false, true);
-            Map<String, String> actualCacheTargetMap = cacheTargetMap.entrySet().stream()
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            entry -> entry.getValue() != null ? entry.getValue().toString() : ""
-                    ));
-            String couponTemplateCacheKey = String.format(MerchantAdminRedisConstant.COUPON_TEMPLATE_KEY, couponTemplateDO.getId());
-
-            // 通过 LUA 脚本执行设置 Hash 数据以及设置过期时间
-            String luaScript = "redis.call('HMSET', KEYS[1], unpack(ARGV, 1, #ARGV - 1))" +
-                    "redis.call('EXPIREAT', KEYS[1], ARGV[#ARGV])";
-
-            List<String> keys = Collections.singletonList(couponTemplateCacheKey);
-            List<String> args = new ArrayList<>(actualCacheTargetMap.size() * 2 + 1);
-            actualCacheTargetMap.forEach((key, value) -> {
-                args.add(key);
-                args.add(value);
-            });
-
-            // 优惠券活动过期时间转换位秒级别的 Unix 时间戳
-            args.add(String.valueOf(couponTemplateDO.getValidStartTime().getTime() / 1000));
-
-            // 执行 LUA 脚本
-            stringRedisTemplate.execute(
-                    new DefaultRedisScript<>(luaScript, Long.class),
-                    keys,
-                    args.toArray()
-            );
-        } finally {
-            lock.unlock();
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-    }
 
-    /**
-     * @return 获取当前线程上下文 ServletPath
-     */
-    private String getServletPath() {
-        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        return sra.getRequest().getServletPath();
-    }
+        // 通过责任链验证请求参数是否正确
+        merchantAdminChainContext.handler(MERCHANT_ADMIN_CREATE_COUPON_TEMPLATE_KEY.name(), requestParam);
 
-    /**
-     * @return 当前操作用户 ID
-     */
-    private String getCurrentUserId() {
-        // 用户属于非核心功能，这里先通过模拟的形式代替。后续如果需要后管展示，会重构该代码
-        return "1810518709471555585";
-    }
+        // 新增优惠券模版信息到数据库
+        CouponTemplateDO couponTemplateDO = BeanUtil.toBean(requestParam, CouponTemplateDO.class);
+        couponTemplateDO.setStatus(CouponTemplateStatusEnum.ACTIVE.getStatus());
+        couponTemplateDO.setShopNumber(UserContext.getShopNumber());
+        couponTemplateMapper.insert(couponTemplateDO);
 
-    /**
-     * @return joinPoint md5
-     */
-    private String calcArgsMD5(CouponTemplateSaveReqDTO requestParam) {
-        return DigestUtil.md5Hex(JSON.toJSONBytes(requestParam));
+        //因为模板 ID 是运行中生成的，@LogRecord 默认拿不到，所以我们需要手动设置
+        LogRecordContext.putVariable("bizNo", couponTemplateDO.getId());
+
+        // 缓存预热：通过将数据库的记录序列化成 JSON 字符串放入 Redis 缓存
+        CouponTemplateQueryRespDTO actualRespDTO = BeanUtil.toBean(couponTemplateDO, CouponTemplateQueryRespDTO.class);
+        Map<String, Object> cacheTargetMap = BeanUtil.beanToMap(actualRespDTO, false, true);
+        Map<String, String> actualCacheTargetMap = cacheTargetMap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue() != null ? entry.getValue().toString() : ""
+                ));
+        String couponTemplateCacheKey = String.format(MerchantAdminRedisConstant.COUPON_TEMPLATE_KEY, couponTemplateDO.getId());
+
+        // 通过 LUA 脚本执行设置 Hash 数据以及设置过期时间
+        String luaScript = "redis.call('HMSET', KEYS[1], unpack(ARGV, 1, #ARGV - 1))" +
+                "redis.call('EXPIREAT', KEYS[1], ARGV[#ARGV])";
+
+        List<String> keys = Collections.singletonList(couponTemplateCacheKey);
+        List<String> args = new ArrayList<>(actualCacheTargetMap.size() * 2 + 1);
+        actualCacheTargetMap.forEach((key, value) -> {
+            args.add(key);
+            args.add(value);
+        });
+
+        // 优惠券活动过期时间转换位秒级别的 Unix 时间戳
+        args.add(String.valueOf(couponTemplateDO.getValidStartTime().getTime() / 1000));
+
+        // 执行 LUA 脚本
+        stringRedisTemplate.execute(
+                new DefaultRedisScript<>(luaScript, Long.class),
+                keys,
+                args.toArray()
+        );
     }
 }

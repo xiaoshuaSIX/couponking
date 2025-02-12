@@ -1,5 +1,6 @@
 package com.xiaoshuai66.couponking.merchant.admin.controller;
 
+import com.xiaoshuai66.couponking.framework.idempotent.NoDuplicateSubmit;
 import com.xiaoshuai66.couponking.framework.result.Result;
 import com.xiaoshuai66.couponking.framework.web.Results;
 import com.xiaoshuai66.couponking.merchant.admin.dto.req.CouponTemplateSaveReqDTO;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CouponTemplateController {
     private final CouponTemplateService couponTemplateService;
 
+    @NoDuplicateSubmit
     @Operation(summary = "商家创建优惠券模版")
     @PostMapping("/api/merchant-admin/coupon-template/create")
     public Result<Void> createCouponTemplate(@RequestBody CouponTemplateSaveReqDTO requestParam) {
