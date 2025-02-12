@@ -3,6 +3,7 @@ package com.xiaoshuai66.couponking.merchant.admin.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mzt.logapi.context.LogRecordContext;
 import com.mzt.logapi.starter.annotation.LogRecord;
 import com.xiaoshuai66.couponking.merchant.admin.common.constant.MerchantAdminRedisConstant;
 import com.xiaoshuai66.couponking.merchant.admin.common.context.UserContext;
@@ -72,6 +73,9 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
         couponTemplateDO.setStatus(CouponTemplateStatusEnum.ACTIVE.getStatus());
         couponTemplateDO.setShopNumber(UserContext.getShopNumber());
         couponTemplateMapper.insert(couponTemplateDO);
+
+        //因为模板 ID 是运行中生成的，@LogRecord 默认拿不到，所以我们需要手动设置
+        LogRecordContext.putVariable("bizNo", couponTemplateDO.getId());
 
         // 缓存预热：通过将数据库的记录序列化成 JSON 字符串放入 Redis 缓存
         CouponTemplateQueryRespDTO actualRespDTO = BeanUtil.toBean(couponTemplateDO, CouponTemplateQueryRespDTO.class);
