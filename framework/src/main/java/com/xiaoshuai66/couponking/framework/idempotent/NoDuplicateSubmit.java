@@ -21,5 +21,5 @@ public @interface NoDuplicateSubmit {
     /**
      * 触发幂等失败逻辑时，返回到错误提示信息
      */
-    String message() default "您操作的太哦，请稍后再试";
+    String message() default "您操作的太快哦，请稍后再试";
 }
