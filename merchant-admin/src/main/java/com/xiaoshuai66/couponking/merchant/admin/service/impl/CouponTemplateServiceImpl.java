@@ -3,6 +3,7 @@ package com.xiaoshuai66.couponking.merchant.admin.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mzt.logapi.starter.annotation.LogRecord;
 import com.xiaoshuai66.couponking.merchant.admin.constant.MerchantAdminRedisConstant;
 import com.xiaoshuai66.couponking.merchant.admin.context.UserContext;
 import com.xiaoshuai66.couponking.merchant.admin.dao.entity.CouponTemplateDO;
@@ -45,6 +46,22 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
 
     private final CouponTemplateLogMapper couponTemplateLogMapper;
 
+    @LogRecord(
+            success = """
+                    创建优惠券：{{#requestParam.name}}， \
+                    优惠对象：{{#requestParam.target}}， \
+                    优惠类型：{{#requestParam.type}}， \
+                    库存数量：{{#requestParam.stock}}， \
+                    优惠商品编码：{{#requestParam.goods}}， \
+                    有效期开始时间：{{#requestParam.validStartTime}}， \
+                    有效期结束时间：{{#requestParam.validEndTime}}， \
+                    领取规则：{{#requestParam.receiveRule}}， \
+                    消耗规则：{{#requestParam.consumeRule}};
+                    """,
+            type = "CouponTemplate",
+            bizNo = "{{#bizNo}}",
+            extra = "{{#requestParam.toString()}}"
+    )
     @Override
     public void createCouponTemplate(CouponTemplateSaveReqDTO requestParam) {
         // 通过责任链验证请求参数是否正确
