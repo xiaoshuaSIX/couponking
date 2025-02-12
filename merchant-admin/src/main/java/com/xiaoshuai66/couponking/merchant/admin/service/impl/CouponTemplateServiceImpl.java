@@ -107,31 +107,5 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
                 keys,
                 args.toArray()
         );
-
-        try {
-            String operationLog = String.format("%s 用户创建优惠券：%s，优惠对象：%s，优惠类型：%s，库存数量：%s，优惠商品编码：%s，有效期开始时间：%s，有效期结束时间：%s，领取规则：%s，消耗规则：%s;",
-                    UserContext.getUserName(),
-                    requestParam.getName(),
-                    DiscountTargetEnum.findValueByType(requestParam.getTarget()),
-                    DiscountTypeEnum.findValueByType(requestParam.getType()),
-                    requestParam.getStock(),
-                    requestParam.getGoods() == null ? "" : requestParam.getGoods(),
-                    requestParam.getValidStartTime(),
-                    requestParam.getValidEndTime(),
-                    requestParam.getReceiveRule(),
-                    requestParam.getConsumeRule());
-
-            CouponTemplateLogDO couponTemplateLogDO = CouponTemplateLogDO.builder()
-                    .couponTemplateId(String.valueOf(couponTemplateDO.getId()))
-                    .operatorId(UserContext.getUserId())
-                    .shopNumber(UserContext.getShopNumber())
-                    .operationLog(operationLog)
-                    .modifiedData(JSON.toJSONString(couponTemplateDO))
-                    .build();
-            couponTemplateLogMapper.insert(couponTemplateLogDO);
-        } catch (Exception ex) {
-            log.error("记录操作日志错误", ex);
-            // 发起接口报警，但不能阻碍主流程继续执行
-        }
     }
 }
