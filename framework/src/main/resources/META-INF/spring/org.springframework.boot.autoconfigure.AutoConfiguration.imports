@@ -1,0 +1,2 @@
+com.xiaoshuai66.couponking.framework.config.WebAutoConfiguration
+com.xiaoshuai66.couponking.framework.config.IdempotentConfiguration
