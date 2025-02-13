@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- namespace = mapper对应的全限定符 -->
+<mapper namespace="com.xiaoshuai66.couponking.merchant.admin.dao.mapper.CouponTemplateMapper">
+
+    <!-- 增加优惠券模板发行量 -->
+    <update id="increaseNumberCouponTemplate">
+        UPDATE t_coupon_template
+        SET stock = stock + #{number}
+        WHERE shop_number = #{shopNumber}
+          AND id = #{couponTemplateId}
+    </update>
+</mapper>
+
