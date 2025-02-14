@@ -14,8 +14,7 @@ services:
       - coupon_net
 
   mysql:
-    image: amd64/mysql:5.7.36
-    platform: linux/amd64
+    image: mysql:5.7.36
     container_name: coupon-mysql
     ports:
       - "3306:3306"
@@ -28,23 +27,23 @@ services:
     image: apache/rocketmq:5.3.1
     container_name: coupon-rmqnamesrv
     environment:
-      JAVA_OPT_EXT: -server -Xms256m -Xmx256m 
+      JAVA_OPT_EXT: -server -Xms256m -Xmx256m
     ports:
-      - "127.0.0.1:9876:9876"
+      - "9876:9876"
     networks:
       - coupon_net
     command: sh mqnamesrv
-    
+
 
   rmqbroker:
     image: apache/rocketmq:5.3.1
     container_name: coupon-rmqbroker
     ports:
       # Dashboard pass through
-      - "127.0.0.1:8080:8080" 
-      - "127.0.0.1:10909:10909"
-      - "127.0.0.1:10911:10911"
-      - "127.0.0.1:10912:10912"
+      - "8080:8080"
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
     environment:
       NAMESRV_ADDR: rmqnamesrv:9876
       JAVA_OPT_EXT: -server -Xms512m -Xmx512m -Xmn256m
@@ -58,6 +57,7 @@ services:
         flushDiskType = ASYNC_FLUSH
         brokerIP1=localhost
     volumes:
+      # 注：./rocketmq/broker/store 需要提前创建出来 并且赋予权限 chmod -R 777 ./rocketmq
       - ./rocketmq/broker/store:/home/rocketmq/store
     depends_on:
       - rmqnamesrv
@@ -99,4 +99,4 @@ networks:
       driver: default
       config:
         - subnet: 172.20.0.0/16
-      
+

@@ -1,0 +1,103 @@
+services:
+  redis:
+    image: redis:7.2.6
+    container_name: coupon-redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/conf:/etc/redis/redis.conf
+      - ./redis/data:/data
+    command: redis-server /etc/redis/redis.conf --appendonly yes
+    networks:
+      - coupon_net
+
+  mysql:
+    image: amd64/mysql:5.7.36
+    platform: linux/amd64
+    container_name: coupon-mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - coupon_net
+    environment:
+      MYSQL_ROOT_PASSWORD: 'abc123'
+
+  rmqnamesrv:
+    image: apache/rocketmq:5.3.1
+    container_name: coupon-rmqnamesrv
+    environment:
+      JAVA_OPT_EXT: -server -Xms256m -Xmx256m 
+    ports:
+      - "9876:9876"
+    networks:
+      - coupon_net
+    command: sh mqnamesrv
+    
+
+  rmqbroker:
+    image: apache/rocketmq:5.3.1
+    container_name: coupon-rmqbroker
+    ports:
+      # Dashboard pass through
+      - "8080:8080"
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    environment:
+      NAMESRV_ADDR: rmqnamesrv:9876
+      JAVA_OPT_EXT: -server -Xms512m -Xmx512m -Xmn256m
+      BROKER_CONF: |
+        brokerClusterName = MinimalCluster
+        brokerName = broker-a
+        brokerId = 0
+        deleteWhen = 04
+        fileReservedTime = 48
+        brokerRole = ASYNC_MASTER
+        flushDiskType = ASYNC_FLUSH
+        brokerIP1=localhost
+    volumes:
+      # 注：./rocketmq/broker/store 需要提前创建出来 并且赋予权限 chmod -R 777 ./rocketmq
+      - ./rocketmq/broker/store:/home/rocketmq/store
+    depends_on:
+      - rmqnamesrv
+    networks:
+      - coupon_net
+    command: |
+      bash -c '
+      mkdir -p /home/rocketmq/conf && 
+      echo "$$BROKER_CONF" > /home/rocketmq/conf/broker.conf && 
+      ./mqbroker -c /home/rocketmq/conf/broker.conf
+      '
+
+  rmqdashboard:
+    image: apacherocketmq/rocketmq-dashboard:latest
+    container_name: coupon-rmqdashboard
+    network_mode: "service:rmqbroker"
+    environment:
+      JAVA_OPTS: -Drocketmq.namesrv.addr=rmqnamesrv:9876
+
+  nacos:
+    image: qingpan/rnacos:v0.6.12
+    container_name: coupon-nacos
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "10848:10848"
+    volumes:
+      - ./nacos/data:/io:rw
+    environment:
+      - RNACOS_INIT_ADMIN_USERNAME=nacos
+      - RNACOS_INIT_ADMIN_PASSWORD=nacos
+      - RNACOS_HTTP_PORT=8848
+    networks:
+      - coupon_net
+
+networks:
+  coupon_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+      
