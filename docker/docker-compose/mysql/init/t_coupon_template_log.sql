@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS coupon_king_rebuild_0;
+CREATE DATABASE IF NOT EXISTS coupon_king_rebuild_1;
+
 USE coupon_king_rebuild_0;
 
 CREATE TABLE `t_coupon_template_log_0`

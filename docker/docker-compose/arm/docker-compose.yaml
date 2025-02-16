@@ -19,6 +19,13 @@ services:
     container_name: coupon-mysql
     ports:
       - "3306:3306"
+    volumes:
+      #mysql数据库挂载到host物理机目录/e/docker/mysql/data/db
+      - "./mysql/data:/var/lib/mysql"
+      #容器的配置目录挂载到host物理机目录/e/docker/mysql/data/conf
+      - "./mysql/conf:/etc/mysql/conf.d"
+      - "./mysql/root:/root"
+      - "./mysql/init:/docker-entrypoint-initdb.d"
     networks:
       - coupon_net
     environment:
@@ -91,6 +98,25 @@ services:
       - RNACOS_INIT_ADMIN_USERNAME=nacos
       - RNACOS_INIT_ADMIN_PASSWORD=nacos
       - RNACOS_HTTP_PORT=8848
+    networks:
+      - coupon_net
+
+  xxl-job:
+    image: xlight/xxl-job-admin-arm:latest
+    hostname: admin
+    container_name: coupon-xxl_job
+    ports:
+      - 28888:8080
+    links:
+      - mysql
+    volumes:
+      - "./xxl-job/tmp:/data/applogs"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/xxl_job?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&allowMultiQueries=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=abc123
+    depends_on:
+      - mysql
     networks:
       - coupon_net
 

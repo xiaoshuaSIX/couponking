@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS coupon_king_rebuild_0;
 USE coupon_king_rebuild_0;
 
 CREATE TABLE `t_coupon_task` (
