@@ -16,6 +16,7 @@ import com.xiaoshuai66.couponking.merchant.admin.dto.resp.CouponTemplateQueryRes
 import com.xiaoshuai66.couponking.merchant.admin.service.CouponTaskService;
 import com.xiaoshuai66.couponking.merchant.admin.service.CouponTemplateService;
 import com.xiaoshuai66.couponking.merchant.admin.service.handler.excel.RowCountListener;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RBlockingDeque;
 import org.redisson.api.RDelayedQueue;
@@ -86,7 +87,7 @@ public class CouponTaskServiceImpl extends ServiceImpl<CouponTaskMapper, CouponT
         // 100 万数据大概需要 4 秒才能返回前段，如果加上验证将会时间更长，所以这里将最耗时间到统计操作异步化
         JSONObject delayJsonObject = JSONObject
                 .of("fileAddress", requestParam.getFileAddress(), "couponTaskId", couponTaskDO.getId());
-//        executorService.execute(() -> refreshCouponTaskSendNum(delayJsonObject));
+        executorService.execute(() -> refreshCouponTaskSendNum(delayJsonObject));
 
         // 假设刚把消息提交到线程池，突然应用宕机了，我们通过延迟队列进行兜底 Refresh
         RBlockingDeque<Object> blockingDeque = redissonClient.getBlockingDeque("COUPON_TASK_SEND_NUM_DELAY_QUEUE");
@@ -110,20 +111,28 @@ public class CouponTaskServiceImpl extends ServiceImpl<CouponTaskMapper, CouponT
         couponTaskMapper.updateById(updateCouponTaskDO);
     }
 
+    /**
+     * @PostConstruct 标记一个方法，表示该方法在依赖注入完成之后自动执行，用于初始化操作
+     * 因为静态内部类的 Bean 注入有问题，所以我们这里直接 new 对象运行即可
+     * 如果按照上一个版本些，refreshCouponTaskSendNum 方法中的 couponTaskMapper 为空
+     */
+    @PostConstruct
+    public void init() {
+        new RefreshCouponTaskDelayQueueRunner(this, couponTaskMapper, redissonClient).run();
+    }
 
     /**
      * 优惠券延迟刷新发送条数兜底消费者｜这是兜底策略，一般来说不会执行这段逻辑
      * 如果延迟消息没有持久化成功，或者 Redis 挂了怎么办？后续可以人工处理
      */
-    @Service
     @RequiredArgsConstructor
-    class RefreshCouponTaskDelayQueueRunner implements CommandLineRunner {
+    static class RefreshCouponTaskDelayQueueRunner{
 
+        private final CouponTaskServiceImpl couponTaskService;
         private final CouponTaskMapper couponTaskMapper;
         private final RedissonClient redissonClient;
 
-        @Override
-        public void run(String... args) throws Exception {
+        public void run() {
             Executors.newSingleThreadExecutor(
                         runnable -> {
                         Thread thread = new Thread(runnable);
@@ -141,7 +150,7 @@ public class CouponTaskServiceImpl extends ServiceImpl<CouponTaskMapper, CouponT
                                     // 获取优惠券推送记录，查看发送条数是否已经有值，有的话代表上面线程池已经处理完成完成，无需再处理
                                     CouponTaskDO couponTaskDO = couponTaskMapper.selectById(delayJsonObject.getLong("couponTaskId"));
                                     if (couponTaskDO.getSendNum() == null) {
-                                        refreshCouponTaskSendNum(delayJsonObject);
+                                        couponTaskService.refreshCouponTaskSendNum(delayJsonObject);
                                     }
                                 }
                             } catch (Throwable ignored) {
