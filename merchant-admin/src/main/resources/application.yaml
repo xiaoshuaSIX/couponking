@@ -41,6 +41,17 @@ knife4j:
   setting:
     language: zh_cn
 
+xxl-job:
+  access-token: default_token
+  admin:
+    addresses: http://localhost:19875/xxl-job-admin
+  executor:
+    application-name: coupon-king-merchant-admin
+    # 执行器IP默认为空表示自动获取IP
+    ip: ""
+    log-retention-days: 30
+    port: 19999
+
 rocketmq:
   name-server: 127.0.0.1:9876
   producer:

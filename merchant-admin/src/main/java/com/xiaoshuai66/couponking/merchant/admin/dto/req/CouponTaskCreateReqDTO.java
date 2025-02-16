@@ -48,7 +48,7 @@ public class CouponTaskCreateReqDTO {
      * 优惠券模版id
      */
     @Schema(description = "优惠券模版id",
-            example = "1890739412955041794",
+            example = "1891175172434841602",
             required = true)
     private String couponTemplateId;
 
