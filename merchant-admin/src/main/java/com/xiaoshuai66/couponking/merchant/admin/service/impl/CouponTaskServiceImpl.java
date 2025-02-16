@@ -13,15 +13,17 @@ import com.xiaoshuai66.couponking.merchant.admin.dao.entity.CouponTaskDO;
 import com.xiaoshuai66.couponking.merchant.admin.dao.mapper.CouponTaskMapper;
 import com.xiaoshuai66.couponking.merchant.admin.dto.req.CouponTaskCreateReqDTO;
 import com.xiaoshuai66.couponking.merchant.admin.dto.resp.CouponTemplateQueryRespDTO;
+import com.xiaoshuai66.couponking.merchant.admin.mq.event.CouponTaskExecuteEvent;
+import com.xiaoshuai66.couponking.merchant.admin.mq.producer.CouponTaskActualExecuteProducer;
 import com.xiaoshuai66.couponking.merchant.admin.service.CouponTaskService;
 import com.xiaoshuai66.couponking.merchant.admin.service.CouponTemplateService;
 import com.xiaoshuai66.couponking.merchant.admin.service.handler.excel.RowCountListener;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBlockingDeque;
 import org.redisson.api.RDelayedQueue;
 import org.redisson.api.RedissonClient;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,7 @@ import java.util.concurrent.*;
  * @Create 2025/2/16 00:10
  * @Version 1.0
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CouponTaskServiceImpl extends ServiceImpl<CouponTaskMapper, CouponTaskDO> implements CouponTaskService {
@@ -44,6 +47,7 @@ public class CouponTaskServiceImpl extends ServiceImpl<CouponTaskMapper, CouponT
     private final CouponTemplateService couponTemplateService;
     private final CouponTaskMapper couponTaskMapper;
     private final RedissonClient redissonClient;
+    private final CouponTaskActualExecuteProducer couponTaskActualExecuteProducer;
 
     /**
      * 为什么这里拒绝策略使用直接丢弃任务？因为在发送任务时如果遇到发送数量为空，会重新计算
@@ -94,6 +98,15 @@ public class CouponTaskServiceImpl extends ServiceImpl<CouponTaskMapper, CouponT
         RDelayedQueue<Object> delayedQueue = redissonClient.getDelayedQueue(blockingDeque);
         // 这里延迟设置 20 秒，原因是我们笃定上面线程池 20 秒之内就能结束时间
         delayedQueue.offer(delayJsonObject, 20, TimeUnit.SECONDS);
+
+        // 如果是立即发送任务，直接调用消息队列进行发送流程
+        if (Objects.equals(requestParam.getSendType(), CouponTaskSendTypeEnum.IMMEDIATE.getType())) {
+            // 执行优惠券推送业务，正式向用户发起优惠券
+            CouponTaskExecuteEvent couponTaskExecuteEvent = CouponTaskExecuteEvent.builder()
+                    .couponTaskId(couponTaskDO.getId())
+                    .build();
+            couponTaskActualExecuteProducer.sendMessage(couponTaskExecuteEvent);
+        }
     }
 
     private void refreshCouponTaskSendNum(JSONObject delayJsonObject) {
