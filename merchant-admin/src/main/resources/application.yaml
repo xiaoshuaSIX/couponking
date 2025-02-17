@@ -5,16 +5,12 @@ spring:
   application:
     name: couponKing-merchant-admin
   datasource:
-#    url: jdbc:mysql://localhost:3306/coupon_king_rebuild?useUnicode=true&characterEncoding=UTF-8&rewriteBatchedStatements=true&allowMultiQueries=true&serverTimezone=Asia/Shanghai
-#    url: jdbc:mysql://192.168.200.72:3306/coupon_king_rebuild?useUnicode=true&characterEncoding=UTF-8&rewriteBatchedStatements=true&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai
-#    username: root
-#    password: abc123
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
     url: jdbc:shardingsphere:classpath:shardingsphere-config.yaml
   data:
     redis:
-      host: localhost
-#      host: 192.168.200.72
+#      host: localhost
+      host: 192.168.200.72
       port: 6379
 #      password: abc123
 
