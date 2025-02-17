@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "优惠券模板管理")
 public class CouponTemplateController {
     private final CouponTemplateService couponTemplateService;
-    @Operation
+    @Operation(summary = "查询优惠券模板")
     @GetMapping("/api/engine/coupon-template/query")
     public Result<CouponTemplateQueryRespDTO> findCouponTemplate(CouponTemplateQueryReqDTO requestParam) {
         return Results.success(couponTemplateService.findCouponTemplate(requestParam));

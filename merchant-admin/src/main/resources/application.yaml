@@ -38,7 +38,7 @@ knife4j:
     language: zh_cn
 
 xxl-job:
-  enable: false
+  enabled: false
   access-token: default_token
   admin:
     addresses: http://localhost:19875/xxl-job-admin
@@ -51,6 +51,7 @@ xxl-job:
 
 rocketmq:
   name-server: 127.0.0.1:9876
+#  name-server: 192.168.200.72:9876
   producer:
     group: couponKing_merchant-admin-service_common-message-execute_pg
     send-message-timeout: 2000 # 发送超时时间

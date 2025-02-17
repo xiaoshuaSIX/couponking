@@ -117,7 +117,7 @@ public class CouponTemplateServiceImpl extends ServiceImpl<CouponTemplateMapper,
         });
 
         // 优惠券活动过期时间转换位秒级别的 Unix 时间戳
-        args.add(String.valueOf(couponTemplateDO.getValidStartTime().getTime() / 1000));
+        args.add(String.valueOf(couponTemplateDO.getValidEndTime().getTime() / 1000));
 
         // 执行 LUA 脚本
         stringRedisTemplate.execute(

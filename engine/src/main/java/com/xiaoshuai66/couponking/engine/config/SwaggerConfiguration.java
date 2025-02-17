@@ -32,8 +32,8 @@ public class SwaggerConfiguration implements ApplicationRunner {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("券王-商家后台管理系统")
-                        .description("创建优惠券、店家查看以及管理优惠券、创建优惠券发放批次等")
+                        .title("券王-核心引擎系统")
+                        .description("负责优惠券单个查看、列表查看、锁定以及核销等功能等")
                         .version("v1.0.0")
                         // 设置 OpenAPI 文档的联系信息，包括联系人姓名，邮箱
                         .contact(new Contact().name("xiaoshuai66").email("xs2357377358@163.com"))

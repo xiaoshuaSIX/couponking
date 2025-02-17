@@ -35,14 +35,14 @@ rules:
         type: CLASS_BASED # 根据自定义库分片算法类进行分片
         props: # 分片相关属性
           # 自定义库分片算法Class
-          algorithmClassName: com.xiaoshuai66.couponking.merchant.admin.dao.sharding.DBHashModShardingAlgorithm
+          algorithmClassName: com.xiaoshuai66.couponking.engine.dao.sharding.DBHashModShardingAlgorithm
           sharding-count: 16 # 分片总数量
           strategy: standard # 分片类型，单字段分片
       coupon_template_table_mod: # 优惠券分表算法定义
         type: CLASS_BASED # 根据自定义库分片算法类进行分片
         props: # 分片相关属性
           # 自定义库分片算法Class
-          algorithmClassName: com.xiaoshuai66.couponking.merchant.admin.dao.sharding.TableHashModShardingAlgorithm
+          algorithmClassName: com.xiaoshuai66.couponking.engine.dao.sharding.TableHashModShardingAlgorithm
           strategy: standard # 分片类型，单字段分片
 
 props:
