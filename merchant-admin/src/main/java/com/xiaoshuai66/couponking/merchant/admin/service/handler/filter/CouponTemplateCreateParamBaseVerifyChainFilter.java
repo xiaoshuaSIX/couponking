@@ -10,6 +10,8 @@ import com.xiaoshuai66.couponking.merchant.admin.common.enums.DiscountTypeEnum;
 import com.xiaoshuai66.couponking.merchant.admin.service.basics.chain.MerchantAdminAbstractChainHandler;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -31,6 +33,14 @@ public class CouponTemplateCreateParamBaseVerifyChainFilter implements MerchantA
 
     @Override
     public void handler(CouponTemplateSaveReqDTO requestParam) {
+
+        // 验证优惠券模版过期时间，不能超过一年
+        LocalDateTime oneYearLater = LocalDateTime.now().plusYears(1);
+        Date oneYearLaterDate = Date.from(oneYearLater.atZone(ZoneId.systemDefault()).toInstant());
+        if (requestParam.getValidEndTime().after(oneYearLaterDate)) {
+            throw new ClientException("优惠券模版过期时间过长");
+        }
+
         // 验证参数基本数据关系是否正确
         boolean targetAnyMatch = Arrays.stream(DiscountTargetEnum.values())
                 .anyMatch(enumConstant -> enumConstant.getType() == requestParam.getTarget());
