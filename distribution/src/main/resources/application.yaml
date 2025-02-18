@@ -4,3 +4,24 @@ server:
 spring:
   application:
     name: couponKing-distribution
+  datasource:
+    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+    url: jdbc:shardingsphere:classpath:shardingsphere-config.yaml
+    data:
+      redis:
+        host: localhost
+#      host: 192.168.200.72
+        port: 6379
+#      password: abc123
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: couponKing_distribution-service_common-message-execute_pg
+    send-message-timeout: 2000
+    retry-times-when-send-failed: 1
+    retry-times-when-send-async-failed: 1
