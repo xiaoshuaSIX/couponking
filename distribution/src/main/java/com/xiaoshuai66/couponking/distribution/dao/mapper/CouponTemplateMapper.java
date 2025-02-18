@@ -2,12 +2,12 @@ package com.xiaoshuai66.couponking.distribution.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xiaoshuai66.couponking.distribution.dao.entity.CouponTemplateDO;
-import org.springframework.data.repository.query.Param;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author 赵帅
  * @ClassName: CouponTemplateMapper.java
- * @Description:
+ * @Description: 优惠券模版数据库持久层
  * @Create 2025/2/18 14:36
  */
 public interface CouponTemplateMapper extends BaseMapper<CouponTemplateDO> {

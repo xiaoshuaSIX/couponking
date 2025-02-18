@@ -9,6 +9,6 @@
         SET stock = stock - #{decrementStock}
         WHERE shop_number = #{shopNumber}
           AND id = #{couponTemplateId}
-          AND stock >= ${decrementStock}
+          AND stock >= #{decrementStock}
     </update>
 </mapper>
