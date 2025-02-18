@@ -1,7 +1,9 @@
-CREATE DATABASE IF NOT EXISTS coupon_king_rebuild_0;
-CREATE DATABASE IF NOT EXISTS coupon_king_rebuild_1;
+CREATE DATABASE IF NOT EXISTS coupon_king_rebuild_0 default character set utf8mb4 collate utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS coupon_king_rebuild_1 default character set utf8mb4 collate utf8mb4_unicode_ci;
 
 USE coupon_king_rebuild_0;
+SET NAMES utf8mb4;
+
 CREATE TABLE `t_coupon_template_0`
 (
     `id`               bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -172,6 +174,8 @@ CREATE TABLE `t_coupon_template_7`
 ) ENGINE=InnoDB AUTO_INCREMENT=1810967780615376898 DEFAULT CHARSET=utf8mb4 COMMENT='优惠券模板表';
 
 USE coupon_king_rebuild_1;
+SET NAMES utf8mb4;
+
 CREATE TABLE `t_coupon_template_10`
 (
     `id`               bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',

@@ -1,5 +1,7 @@
-CREATE DATABASE IF NOT EXISTS coupon_king_rebuild_0;
+CREATE DATABASE IF NOT EXISTS coupon_king_rebuild_0 default character set utf8mb4 collate utf8mb4_unicode_ci;
 USE coupon_king_rebuild_0;
+
+SET NAMES utf8mb4;
 
 CREATE TABLE `t_coupon_task` (
                                  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
