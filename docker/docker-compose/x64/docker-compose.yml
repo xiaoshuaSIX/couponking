@@ -62,6 +62,7 @@ services:
         fileReservedTime = 48
         brokerRole = ASYNC_MASTER
         flushDiskType = ASYNC_FLUSH
+        timerMaxDelaySec = 31622400
         brokerIP1=localhost
     volumes:
       # 注：./rocketmq/broker/store 需要提前创建出来 并且赋予权限 chmod -R 777 ./rocketmq
