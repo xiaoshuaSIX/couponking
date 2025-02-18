@@ -22,6 +22,9 @@
         <module>merchant-admin</module>
         <!-- 引擎模块：负责优惠券单个查看、列表查看、锁定以及核销等功能 -->
         <module>engine</module>
+        <module>distribution</module>
+        <module>search</module>
+        <module>settlement</module>
     </modules>
 
     <properties>
