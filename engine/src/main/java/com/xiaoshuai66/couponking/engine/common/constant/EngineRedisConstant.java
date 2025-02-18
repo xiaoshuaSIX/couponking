@@ -1,4 +1,4 @@
-package com.xiaoshuai66.couponking.engine.common;
+package com.xiaoshuai66.couponking.engine.common.constant;
 
 /**
  * @author zhaoshuai
