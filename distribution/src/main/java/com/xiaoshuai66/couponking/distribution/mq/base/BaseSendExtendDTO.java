@@ -30,6 +30,11 @@ public class BaseSendExtendDTO {
     /**
      * 标签
      */
+    private String tag;
+
+    /**
+     * 业务标识
+     */
     private String keys;
 
     /**

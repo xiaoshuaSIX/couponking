@@ -6,7 +6,7 @@ package com.xiaoshuai66.couponking.distribution.common.constant;
  * @Description 分布式 Redis 缓存引擎层常量类
  * @createTime 2025-02-17
  */
-public class EngineRedisConstant {
+public final class EngineRedisConstant {
 
     /**
      * 优惠券模板缓存 Key
