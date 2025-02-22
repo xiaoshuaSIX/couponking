@@ -28,11 +28,6 @@ public class CouponTemplateDistributionEvent {
     private Long couponTaskBatchId;
 
     /**
-     * 通知方式，可组合使用 0：站内信 1：弹框推送 2：邮箱 3：短信
-     */
-    private String notifyType;
-
-    /**
      * 店铺编号
      */
     private Long shopNumber;
@@ -46,21 +41,6 @@ public class CouponTemplateDistributionEvent {
      * 消耗规则
      */
     private String couponTemplateConsumeRule;
-
-    /**
-     * 用户id
-     */
-    private String userId;
-
-    /**
-     * 手机号
-     */
-    private String phone;
-
-    /**
-     * 邮箱
-     */
-    private String mail;
 
     /**
      * 批量保存用户优惠券 Set 长度，默认满 5000 才会批量保存数据库

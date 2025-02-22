@@ -107,11 +107,7 @@ public class ReadExcelDistributionListener extends AnalysisEventListener<CouponT
         // 执行到下面逻辑，说明此时已经读取 BATCH_USER_COUPON_SIZE 行数据了
         // 发送消息队列执行用户优惠券模板分发逻辑  【分发逻辑中包括：1.保存用户优惠券逻辑 2.减库存逻辑】
         CouponTemplateDistributionEvent couponTemplateDistributionEvent = CouponTemplateDistributionEvent.builder()
-                .userId(data.getUserId())
-                .mail(data.getMail())
-                .phone(data.getPhone())
                 .couponTaskId(couponTaskId)
-                .notifyType(couponTaskDO.getNotifyType())
                 .shopNumber(couponTaskDO.getShopNumber())
                 .couponTemplateId(couponTemplateDO.getId())
                 .couponTaskBatchId(couponTaskDO.getBatchId())
