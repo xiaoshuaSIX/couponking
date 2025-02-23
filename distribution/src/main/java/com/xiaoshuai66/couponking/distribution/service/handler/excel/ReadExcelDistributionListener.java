@@ -86,7 +86,7 @@ public class ReadExcelDistributionListener extends AnalysisEventListener<CouponT
                     .put("cause", "优惠券模板无库存")
                     .build();
             CouponTaskFailDO couponTaskFailDO = CouponTaskFailDO.builder()
-                    .batchId(couponTaskDO.getId())
+                    .batchId(couponTaskDO.getBatchId())
                     .jsonObject(JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue))
                     .build();
             couponTaskFailMapper.insert(couponTaskFailDO);
