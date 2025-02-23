@@ -19,7 +19,7 @@ import org.springframework.messaging.Message;
 @Slf4j(topic = "CommonSendProduceTemplate")
 public abstract class AbstractCommonSendProduceTemplate<T> {
 
-    private final RocketMQTemplate rocketMQTemplate;
+    protected final RocketMQTemplate rocketMQTemplate;
 
     /**
      * 构建消息发送事件基础扩充属性实体

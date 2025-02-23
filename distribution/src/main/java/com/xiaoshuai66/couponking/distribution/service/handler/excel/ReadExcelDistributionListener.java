@@ -79,7 +79,6 @@ public class ReadExcelDistributionListener extends AnalysisEventListener<CouponT
         if (!firstField) {
             // 同步当前执行进度到缓存
             stringRedisTemplate.opsForValue().set(templateTaskExecuteProgressKey, String.valueOf(rowCount));
-            ++rowCount;
 
             // 添加到 t_coupon_task_fail 并标记错误原因，方便后续查看未成功发送的原因和记录
             Map<Object, Object> objectMap = MapUtil.builder()
@@ -91,6 +90,7 @@ public class ReadExcelDistributionListener extends AnalysisEventListener<CouponT
                     .jsonObject(JSON.toJSONString(objectMap, SerializerFeature.WriteMapNullValue))
                     .build();
             couponTaskFailMapper.insert(couponTaskFailDO);
+            ++rowCount;
             return;
         }
 
@@ -98,7 +98,7 @@ public class ReadExcelDistributionListener extends AnalysisEventListener<CouponT
         int batchUserSetSize = StockDecrementReturnCombinedUtil.extractSecondField(combinedFiled.intValue());
 
         // batchUserSetSize = BATCH_USER_COUPON_SIZE 时发送消息消费，不满足条件仅记录执行进度即可
-        if (batchUserSetSize < BATCH_USER_COUPON_SIZE) {
+        if (batchUserSetSize < BATCH_USER_COUPON_SIZE || batchUserSetSize % BATCH_USER_COUPON_SIZE != 0) {
             // 同步当前 Excel 执行进度到缓存
             stringRedisTemplate.opsForValue().set(templateTaskExecuteProgressKey, String.valueOf(rowCount));
             ++rowCount;

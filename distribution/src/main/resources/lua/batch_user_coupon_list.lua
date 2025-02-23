@@ -1,7 +1,7 @@
 -- 获取传递的参数
 local userIds = cjson.decode(ARGV[1]) -- 用户 ID 集合，JSON 格式的字符串
 local couponIds = cjson.decode(ARGV[2]) -- 优惠券 ID 集合，JSON格式的字符串
-local userIdPrefix = KEY[1] -- 用户 ID 前缀（从 KEYS 获取）
+local userIdPrefix = KEYS[1] -- 用户 ID 前缀（从 KEYS 获取）
 local currentTime = tonumber(ARGV[3]) -- 获取当前 Unix 时间戳（毫米）
 
 -- 遍历用户 ID 集合
