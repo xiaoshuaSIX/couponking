@@ -18,8 +18,10 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 rocketmq:
   name-server: 127.0.0.1:9876
+#  name-server: 192.168.200.72:9876
   producer:
     group: couponKing_distribution-service_common-message-execute_pg
     send-message-timeout: 2000
