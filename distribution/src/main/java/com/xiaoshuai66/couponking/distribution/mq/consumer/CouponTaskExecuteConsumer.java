@@ -16,6 +16,7 @@ import com.xiaoshuai66.couponking.distribution.mq.event.CouponTaskExecuteEvent;
 import com.xiaoshuai66.couponking.distribution.mq.producer.CouponExecuteDistributionProducer;
 import com.xiaoshuai66.couponking.distribution.service.handler.excel.CouponTaskExcelObject;
 import com.xiaoshuai66.couponking.distribution.service.handler.excel.ReadExcelDistributionListener;
+import com.xiaoshuai66.couponking.framework.idempotent.NoMQDuplicateConsume;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
@@ -45,6 +46,11 @@ public class CouponTaskExecuteConsumer implements RocketMQListener<MessageWrappe
     private final StringRedisTemplate stringRedisTemplate;
     private final CouponExecuteDistributionProducer couponExecuteDistributionProducer;
 
+    @NoMQDuplicateConsume(
+            keyPrefix = "coupon_task_execute:idempotent:",
+            key = "#messageWrapper.message.couponTaskId",
+            keyTimeout = 120
+    )
     @Override
     public void onMessage(MessageWrapper<CouponTaskExecuteEvent> messageWrapper) {
         // 开头打印日志

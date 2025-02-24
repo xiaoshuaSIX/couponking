@@ -1,8 +1,10 @@
 package com.xiaoshuai66.couponking.framework.config;
 
 import com.xiaoshuai66.couponking.framework.idempotent.NoDuplicateSubmitAspect;
+import com.xiaoshuai66.couponking.framework.idempotent.NoMQDuplicateConsumeAspect;
 import org.redisson.api.RedissonClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
  * ClassName: IdempotentConfiguration
@@ -19,5 +21,10 @@ public class IdempotentConfiguration {
     @Bean
     public NoDuplicateSubmitAspect noDuplicateSubmitAspect(RedissonClient redissonClient) {
         return new NoDuplicateSubmitAspect(redissonClient);
+    }
+
+    @Bean
+    public NoMQDuplicateConsumeAspect noMQDuplicateConsumeAspect(StringRedisTemplate stringRedisTemplate) {
+        return new NoMQDuplicateConsumeAspect(stringRedisTemplate);
     }
 }
