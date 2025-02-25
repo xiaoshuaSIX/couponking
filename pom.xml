@@ -22,9 +22,14 @@
         <module>merchant-admin</module>
         <!-- 引擎模块：负责优惠券单个查看、列表查看、锁定以及核销等功能 -->
         <module>engine</module>
+        <!-- 分发模块：负责按批次分发用户优惠券，可提供应用弹框推送、站内信或短信通知等 -->
         <module>distribution</module>
+        <!-- 搜索模块：提供用户优惠券搜索功能 -->
         <module>search</module>
+        <!-- 结算模块：负责用户下单时订单金额计算功能，因和订单相关联，该服务流量较大 -->
         <module>settlement</module>
+        <!-- 基础架构模块：仅包含公共内容，一个包引入构建所有组件 -->
+        <module>framework</module>
     </modules>
 
     <properties>
