@@ -2,7 +2,7 @@ package com.xiaoshuai66.couponking.engine.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xiaoshuai66.couponking.engine.dao.entity.CouponTemplateDO;
-import org.springframework.data.repository.query.Param;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * ClassName: CouponTemplateMapper

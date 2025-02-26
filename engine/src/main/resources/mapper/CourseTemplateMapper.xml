@@ -1,7 +1,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.nageoffer.onecoupon.engine.dao.mapper.CouponTemplateMapper">
+<mapper namespace="com.xiaoshuai66.couponking.engine.dao.mapper.CouponTemplateMapper">
 
     <!-- 通过乐观机制原子扣减优惠券模板库存 -->
     <update id="decrementCouponTemplateStock">
