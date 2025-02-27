@@ -1,7 +1,9 @@
 package com.xiaoshuai66.couponking.engine.dto.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * ClassName: CouponTemplateQueryReqDTO
@@ -13,6 +15,8 @@ import lombok.Data;
  * @Version 1.0
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "优惠券模板查询请求参数实体")
 public class CouponTemplateQueryReqDTO {
 
