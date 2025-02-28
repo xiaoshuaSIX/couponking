@@ -12,6 +12,7 @@ import com.xiaoshuai66.couponking.framework.web.Results;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +49,7 @@ public class CouponTemplateRemindController {
     }
 
     @Operation(summary = "查询优惠券预约提醒")
+    @GetMapping("/api/engine/coupon-template-remind/list")
     public Result<List<CouponTemplateRemindQueryRespDTO>> listCouponRemind() {
         return Results.success(couponTemplateRemindService.listCouponRemind(new CouponTemplateRemindQueryReqDTO(UserContext.getUserId())));
     }

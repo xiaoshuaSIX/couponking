@@ -1,5 +1,6 @@
 package com.xiaoshuai66.couponking.engine.dao.sharding;
 
+import cn.hutool.core.lang.Singleton;
 import lombok.Getter;
 import org.apache.shardingsphere.infra.util.exception.ShardingSpherePreconditions;
 import org.apache.shardingsphere.sharding.api.sharding.standard.PreciseShardingValue;
@@ -60,6 +61,7 @@ public class DBHashModShardingAlgorithm implements StandardShardingAlgorithm<Lon
     public void init(Properties props) {
         this.props = props;
         shardingCount = getShardingCount(props);
+        Singleton.put(this);
     }
     private int getShardingCount(final Properties props) {
         ShardingSpherePreconditions.checkState(props.containsKey(SHARDING_COUNT_KEY), () -> new ShardingAlgorithmInitializationException(getType(), "Sharding count cannot be null."));
