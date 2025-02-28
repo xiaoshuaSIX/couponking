@@ -8,6 +8,7 @@ import com.xiaoshuai66.couponking.framework.web.Results;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +27,7 @@ public class CouponTemplateRemindController {
 
     @Operation(summary = "发出优惠券预约提醒请求")
     @NoDuplicateSubmit(message = "请勿短时间内重复提交预约提醒请求")
+    @PostMapping("/api/engine/coupon-template-remind/create")
     public Result<Void> createCouponRemind(@RequestBody CouponTemplateRemindCreateReqDTO requestParam) {
         couponTemplateRemindService.createCouponRemind(requestParam);
         return Results.success();
