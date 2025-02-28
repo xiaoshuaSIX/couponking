@@ -5,6 +5,7 @@ import com.alibaba.fastjson2.JSON;
 import com.xiaoshuai66.couponking.engine.common.enums.CouponRemindTypeEnum;
 import com.xiaoshuai66.couponking.engine.mq.event.CouponTemplateRemindDelayEvent;
 import com.xiaoshuai66.couponking.engine.mq.producer.CouponTemplateRemindDelayProducer;
+import com.xiaoshuai66.couponking.engine.service.CouponTemplateRemindService;
 import com.xiaoshuai66.couponking.engine.service.handler.remind.dto.CouponTemplateRemindDTO;
 import com.xiaoshuai66.couponking.engine.service.handler.remind.impl.SendAppMessageRemindCouponTemplate;
 import com.xiaoshuai66.couponking.engine.service.handler.remind.impl.SendEmailRemindCouponTemplate;
@@ -29,10 +30,12 @@ import static com.xiaoshuai66.couponking.engine.common.constant.EngineRedisConst
  * @author: zhaoshuai
  * @date: 2025/2/27 21:03
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CouponTemplateRemindExecutor {
 
+    private final CouponTemplateRemindService couponTemplateRemindService;
     private final SendEmailRemindCouponTemplate sendEmailRemindCouponTemplate;
     private final SendAppMessageRemindCouponTemplate sendAppMessageRemindCouponTemplate;
 
@@ -56,6 +59,12 @@ public class CouponTemplateRemindExecutor {
      * @param couponTemplateRemindDTO 用户预约
      */
     public void executeRemindCouponTemplate(CouponTemplateRemindDTO couponTemplateRemindDTO) {
+        // 用户没取消预约，则发出提醒
+        if (couponTemplateRemindService.isCancelRemind(couponTemplateRemindDTO)) {
+            log.info("用户已取消优惠券预约提醒，参数：{}", JSON.toJSONString(couponTemplateRemindDTO));
+            return;
+        }
+
         // 假设刚把消息提交到线程池，突然应用宕机了，我们通过延迟队列进行兜底 Refresh
         RBlockingDeque<Object> blockingDeque = redissonClient.getBlockingDeque(REDIS_BLOCKING_DEQUE);
         RDelayedQueue<Object> delayedQueue = redissonClient.getDelayedQueue(blockingDeque);
@@ -64,7 +73,6 @@ public class CouponTemplateRemindExecutor {
         delayedQueue.offer(key, 10, TimeUnit.SECONDS);
 
         executorService.execute(() -> {
-            // 用户没取消预约，则发出提醒
             // 向用户发起消息提醒
             switch (Objects.requireNonNull(CouponRemindTypeEnum.getByType(couponTemplateRemindDTO.getType()))) {
                 case APP -> sendAppMessageRemindCouponTemplate.remind(couponTemplateRemindDTO);

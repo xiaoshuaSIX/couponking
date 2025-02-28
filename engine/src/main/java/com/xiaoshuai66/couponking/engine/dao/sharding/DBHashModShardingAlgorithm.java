@@ -32,6 +32,8 @@ public class DBHashModShardingAlgorithm implements StandardShardingAlgorithm<Lon
     public String doSharding(Collection<String> collection, PreciseShardingValue<Long> preciseShardingValue) {
         Long id = preciseShardingValue.getValue(); // 分片键值，也就是商家店铺编号
         int dbSize = collection.size(); // 一共有多少个真实的数据库，咱们就两个 ds_0、ds_1
+        // 这里算法：分片键 取模 % 分片数 -> 确定在那个分片中; 分片数 / 数据库数 -> 每个数据库中存在多少分片
+        // 分片位置 / 每个数据库分片数量 -> 确定在哪个数据库中
         int mod = (int) hashShardingValue(id) % shardingCount / (shardingCount / dbSize); // 取模
         int index = 0;
         // 通过刚才的数据库下表，获取到数据库逻辑名称 ds_0 或者 ds_1
@@ -62,6 +64,10 @@ public class DBHashModShardingAlgorithm implements StandardShardingAlgorithm<Lon
     private int getShardingCount(final Properties props) {
         ShardingSpherePreconditions.checkState(props.containsKey(SHARDING_COUNT_KEY), () -> new ShardingAlgorithmInitializationException(getType(), "Sharding count cannot be null."));
         return Integer.parseInt(props.getProperty(SHARDING_COUNT_KEY));
+    }
+
+    public int getShardingMod(long id, int availableTargetSize) {
+        return (int) hashShardingValue(id) % shardingCount / (shardingCount / availableTargetSize);
     }
 
     private long hashShardingValue(final Comparable<?> shardingValue) {

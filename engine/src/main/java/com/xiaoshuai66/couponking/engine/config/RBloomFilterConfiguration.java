@@ -18,4 +18,14 @@ public class RBloomFilterConfiguration {
         bloomFilter.tryInit(640L, 0.001);
         return bloomFilter;
     }
+
+    /**
+     * 防止取消提醒缓存穿透的布隆过滤器
+     */
+    @Bean
+    public RBloomFilter<String> cancelRemindBloomFilter(RedissonClient redissonClient, @Value("${framework.cache.redis.prefix:}") String cachePrefix) {
+        RBloomFilter<String> bloomFilter = redissonClient.getBloomFilter(cachePrefix + "cancelRemindBloomFilter");
+        bloomFilter.tryInit(640L, 0.001);
+        return bloomFilter;
+    }
 }

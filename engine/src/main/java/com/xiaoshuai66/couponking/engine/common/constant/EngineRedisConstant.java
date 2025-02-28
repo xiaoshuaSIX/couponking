@@ -38,4 +38,9 @@ public class EngineRedisConstant {
      */
     public static final String COUPON_REMIND_CHECK_KEY = "coupon-king_engine:coupon-remind-check:%s_%s_%d_%d";
 
+    /**
+     * 用户预约提醒信息 Key
+     */
+    public static final String USER_COUPON_TEMPLATE_REMIND_INFORMATION = "coupon-king_engine:coupon-remind-information:%s";
+
 }

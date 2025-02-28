@@ -1,6 +1,10 @@
 package com.xiaoshuai66.couponking.engine.controller;
 
+import com.xiaoshuai66.couponking.engine.common.context.UserContext;
+import com.xiaoshuai66.couponking.engine.dto.req.CouponTemplateRemindCancelReqDTO;
 import com.xiaoshuai66.couponking.engine.dto.req.CouponTemplateRemindCreateReqDTO;
+import com.xiaoshuai66.couponking.engine.dto.req.CouponTemplateRemindQueryReqDTO;
+import com.xiaoshuai66.couponking.engine.dto.resp.CouponTemplateRemindQueryRespDTO;
 import com.xiaoshuai66.couponking.engine.service.CouponTemplateRemindService;
 import com.xiaoshuai66.couponking.framework.idempotent.NoDuplicateSubmit;
 import com.xiaoshuai66.couponking.framework.result.Result;
@@ -11,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @className: CouponTemplateRemindController
@@ -31,5 +37,18 @@ public class CouponTemplateRemindController {
     public Result<Void> createCouponRemind(@RequestBody CouponTemplateRemindCreateReqDTO requestParam) {
         couponTemplateRemindService.createCouponRemind(requestParam);
         return Results.success();
+    }
+
+    @Operation(summary = "取消优惠券预约提醒")
+    @NoDuplicateSubmit(message = "请勿短时间内重复提交取消预约提醒消息")
+    @PostMapping("/api/engine/coupon-template-remind/cancel")
+    public Result<Void> cancelCouponRemind(@RequestBody CouponTemplateRemindCancelReqDTO requestParam) {
+        couponTemplateRemindService.cancelCouponRemind(requestParam);
+        return Results.success();
+    }
+
+    @Operation(summary = "查询优惠券预约提醒")
+    public Result<List<CouponTemplateRemindQueryRespDTO>> listCouponRemind() {
+        return Results.success(couponTemplateRemindService.listCouponRemind(new CouponTemplateRemindQueryReqDTO(UserContext.getUserId())));
     }
 }
